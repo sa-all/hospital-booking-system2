@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حجز تذكرة مريض - مستشفى الأمل</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
+  body{background:linear-gradient(-45deg,#0f172a,#1e3a8a,#0e7490,#1e40af);background-size:400% 400%;animation:gradient 12s ease infinite;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  @keyframes gradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  .card{background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);width:100%;max-width:480px;border-radius:24px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:slideUp 0.8s ease-out}
+  @keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .header{text-align:center;margin-bottom:24px}
+  .logo{width:64px;height:64px;background:#1e40af;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:32px;color:white;animation:pulse 2s infinite}
+  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+  h1{color:#1e293b;font-size:24px}
+  p.sub{color:#64748b;font-size:14px;margin-top:4px}
+  .field{margin-bottom:16px;position:relative}
+  label{display:block;font-weight:700;margin-bottom:6px;color:#334155;font-size:14px}
+  input,select{width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:12px;font-size:15px;transition:0.3s;outline:none}
+  input:focus,select:focus{border-color:#1e40af;transform:translateY(-1px);box-shadow:0 4px 12px rgba(30,64,175,0.15)}
+  .row{display:flex;gap:12px}
+  .row .field{flex:1}
+  .btn{width:100%;padding:14px;background:linear-gradient(135deg,#1e40af,#0e7490);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:0.3s;margin-top:8px}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(30,64,175,0.3)}
+  .btn:active{transform:translateY(0)}
+  .success{display:none;text-align:center;padding:20px;animation:pop 0.5s ease}
+  @keyframes pop{0%{transform:scale(0.8)}100%{transform:scale(1)}}
+  .success h2{color:#059669}
+  .ticket{margin-top:16px;background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;padding:16px;text-align:right;font-size:14px;line-height:1.8}
+</style>
+</head>
+<body>
+
+<div class="card" id="formCard">
+  <div class="header">
+    <div class="logo">🏥</div>
+    <h1>حجز تذكرة مريض</h1>
+    <p class="sub">نظام الحجز الإلكتروني - سريع وآمن</p>
+  </div>
+
+  <form id="bookingForm">
+    <div class="field">
+      <label>اسم المريض الكامل</label>
+      <input type="text" id="name" placeholder="مثال: أحمد محمد" required>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>رقم الهاتف</label>
+        <input type="tel" id="phone" placeholder="09xxxxxxxx" required>
+      </div>
+      <div class="field">
+        <label>العمر</label>
+        <input type="number" id="age" placeholder="25" min="1" max="120" required>
+      </div>
+    </div>
+    <div class="field">
+      <label>القسم الطبي</label>
+      <select id="dept" required>
+        <option value="">اختر القسم</option>
+        <option>الباطنية</option>
+        <option>الأطفال</option>
+        <option>الأسنان</option>
+        <option>العظام</option>
+        <option>العيون</option>
+        <option>النساء والتوليد</option>
+        <option>علوم الحاسب - الفحص الطبي للطلاب 😄</option>
+      </select>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>تاريخ الحجز</label>
+        <input type="date" id="date" required>
+      </div>
+      <div class="field">
+        <label>الوقت</label>
+        <select id="time" required>
+          <option value="">اختر الوقت</option>
+          <option>08:00 - 10:00 ص</option>
+          <option>10:00 - 12:00 م</option>
+          <option>02:00 - 04:00 م</option>
+          <option>04:00 - 06:00 م</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" type="submit">✨ تأكيد الحجز</button>
+  </form>
+
+  <div class="success" id="success">
+    <h2>✅ تم الحجز بنجاح!</h2>
+    <div class="ticket" id="ticketData"></div>
+    <button class="btn" onclick="location.reload()" style="background:#334155;margin-top:16px">حجز جديد</button>
+  </div>
+</div>
+
+<script>
+  // منع التواريخ القديمة
+  document.getElementById('date').min = new Date().toISOString().split('T')[0];
+  
+  document.getElementById('bookingForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const dept = document.getElementById('dept').value;
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const ticketNo = 'TK-' + Math.floor(100000 + Math.random()*900000);
+
+    document.getElementById('ticketData').innerHTML = `
+      <strong>رقم التذكرة:</strong> ${ticketNo}<br>
+      <strong>الاسم:</strong> ${name}<br>
+      <strong>الهاتف:</strong> ${phone}<br>
+      <strong>القسم:</strong> ${dept}<br>
+      <strong>الموعد:</strong> ${date} - ${time}<br>
+      <strong>الحالة:</strong> <span style="color:green">مؤكد</span>
+    `;
+    document.getElementById('bookingForm').style.display='none';
+    document.getElementById('success').style.display='block';
+  });
+</script>
+
+</body>
+</html>
